@@ -31,6 +31,13 @@
 (use-package command-log-mode
   :config (command-log-mode 1))
 
+(use-package avy
+  :ensure t
+  :config
+  (set-face-attribute 'avy-goto-char-timer-face nil :foreground "black" :background "red")
+  )
+
+
 (with-eval-after-load 'cnfonts
   (set-face-attribute 'default nil :font "Hack")
   )
@@ -375,7 +382,4 @@
 (set-face-attribute 'lazy-highlight nil :foreground "black" :background "#a88d32")
 (set-face-attribute 'isearch nil :foreground "black" :background "red")
 
-(set-face-attribute 'mode-line nil :foreground "black" :background "RoyalBlue")
-
-;; (set-face-attribute 'avy-goto-char-timer-face nil :foreground "black" :background "blue")
-;; avy
+(set-face-attribute 'mode-line nil :foreground "black" :background "SkyBlue")
