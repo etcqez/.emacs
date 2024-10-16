@@ -31,42 +31,9 @@
 (use-package command-log-mode
   :config (command-log-mode 1))
 
-					;(use-package ivy
-					;  :diminish
-;;  :bind (("C-s" . swiper)
-;;         :map ivy-minibuffer-map
-;;         ("TAB" . ivy-alt-done)
-;;         ("C-l" . ivy-alt-done)
-;;         ("C-j" . ivy-next-line)
-;;         ("C-k" . ivy-previous-line)
-;;         :map ivy-switch-buffer-map
-;;         ("C-k" . ivy-previous-line)
-;;         ("C-l" . ivy-done)
-;;         ("C-d" . ivy-switch-buffer-kill)
-;;         :map ivy-reverse-i-search-map
-;;         ("C-k" . ivy-previous-line)
-;;         ("C-d" . ivy-reverse-i-search-kill))
-					;  :config
-					;  (ivy-mode 1))
-					;
-					;(use-package counsel
-;;  :bind (("M-x" . counsel-M-x)
-;;	 ("C-x b" . counsel-ibuffer)
-;;	 ("C-x C-f" . counsel-find-file))
-					;  :config
-					;  (setq ivy-initial-inputs-alist nil))
-
-;; (use-package doom-modeline
-;;   :ensure t
-;;   :init (doom-modeline-mode 1)
-;;   :custom ((doom-modeline-height 15)))
-
 (with-eval-after-load 'cnfonts
   (set-face-attribute 'default nil :font "Hack")
   )
-;; (set-fontset-font t '(#x2ff0 . #x9ffc) (font-spec :family "Noto Sans Mono CJK SC" :size 14 ))
-
-
 
 ;; lsp
 (use-package lsp-mode
@@ -89,17 +56,6 @@
 (use-package yasnippet
   :ensure t
   :config (yas-global-mode))
-;; (use-package which-key
-;;   :ensure t
-;;   :config (which-key-mode))
-;; (use-package helm-lsp
-;;   :ensure t)
-;; (use-package helm
-;;   :ensure t
-;;   :config (helm-mode))
-;; (use-package lsp-treemacs
-;;   :ensure t)
-
 ;;; This will enable emacs to compile a simple cpp single file without any makefile by just pressing [f9] key
 (defun code-compile()
   (interactive)
@@ -131,7 +87,6 @@
   :config
   (setq pyim-page-tooltip 'popup)
   )
-
 (use-package cnfonts
   :config
   (cnfonts-mode 1)
@@ -251,36 +206,29 @@
   (undo-fu-session-global-mode)
   )
 
-;; (use-package company
-;;   :demand t
-;;   :config
-;;   (add-hook 'after-init-hook 'global-company-mode)
-;;   )
-;; (with-eval-after-load 'evil
-;;   (undo-fu-session-recover))
+(use-package company
+  :demand t
+  :config
+  (add-hook 'after-init-hook 'global-company-mode)
+  )
+(with-eval-after-load 'evil
+  (undo-fu-session-recover))
 
 (use-package evil-numbers
   :demand t
   )
 
+(use-package rainbow-mode
+  :demand t
+  :config
+  (rainbow-mode)
+  )
+
 (recentf-mode 1)
-					;(recentf-menu-open-all-flag t)
 (savehist-mode 1)
 (desktop-save-mode 1)
 (setq display-buffer-alist
       '(
-
-        ;; The added space is for didactic purposes
-
-        ;; Each entry in this list has this anatomy:
-
-        ;; ( BUFFER-MATCHING-RULE
-        ;;   LIST-OF-DISPLAY-BUFFER-FUNCTIONS
-        ;;   OPTIONAL-PARAMETERS)
-
-        ;; Match a buffer whose name is "*Occur*".  We have to escape
-        ;; the asterisks to match them literally and not as a special
-        ;; regular expression character.
         ("\\*shell\\*"
 	 (display-buffer-in-side-window)
 	 (side . right)
@@ -300,6 +248,7 @@
 	 (side . right)
 	 )
 	))
+
 (define-abbrev global-abbrev-table "metest" "a global abbrev for demo purposes")
 (define-abbrev text-mode-abbrev-table "metest" "text-mode abbrev expansion here")
 ;; `abbrev-mode' is buffer-local
@@ -322,7 +271,11 @@
 (define-key evil-normal-state-map (kbd "C-e") 'evil-numbers/dec-at-pt)
 (define-key evil-normal-state-map (kbd "=") 'lsp-format-buffer)
 (define-key evil-normal-state-map (kbd "+") 'format-all-buffer)
-(define-key evil-normal-state-map (kbd "C-t") 'treemacs)
+(define-key evil-normal-state-map (kbd "C-t") 'treemacs-display-current-project-exclusively)
+;; scrolloff
+(setq scroll-step 1)
+(setq scroll-margin 5)
+(setq scroll-conservatively 9999)
 
 ;; emacs
 (define-key evil-insert-state-map (kbd "C-e") #'end-of-line)
@@ -335,6 +288,7 @@
 (define-key evil-normal-state-map (kbd "C-l") #'evil-window-right)
 (define-key evil-insert-state-map (kbd "C-d") #'evil-paste-last-insertion)
 
+;; C-s
 (defun save-with-normal (number)       ; Interactive version.
   (interactive "p")
   (save-buffer)
@@ -350,51 +304,10 @@
 (define-key evil-normal-state-map (kbd "u") #'undo-tree-undo)
 (define-key evil-normal-state-map (kbd "C-r") #'undo-tree-redo)
 
+;; s
 (setq avy-background t)
 (setq avy-keys (number-sequence ?a ?z))
 (setq avy-all-windows t)
-
-					;(defconst avy-lead-faces '(avy-lead-face nil :background "green" :foreground "yellow"
-					;                           avy-lead-face-0 nil :background "green" :foreground "yellow"
-					;                           avy-lead-face-2 nil :background "green" :foreground "yellow")
-					;  "Face sequence for `avy--overlay-at-full'.")
-
-					;(defconst avy-lead-faces
-					;  '(avy-lead-face :background "green" :foreground "yellow")
-					;  )
-
-					;(defconst avy-lead-faces '(avy-lead-face-0 nil :background "green" :foreground "yellow"))
-
-(setq evil-default-cursor       '("DodgerBlue1" box)
-      evil-normal-state-cursor  '("gray" box)
-      evil-emacs-state-cursor   '("orange" box)
-      evil-motion-state-cursor  '("SeaGreen1" box)
-      evil-insert-state-cursor  '("white" bar)
-      evil-visual-state-cursor  '("white" box)
-      evil-replace-state-cursor '("pink" box))
-(setq scroll-step 1)
-(setq scroll-margin 5)
-(setopt use-short-answers t)
-
-;; `(avy-lead-face ((t (:foreground ,"#750000" :background  ,"#BD9800"))))
-;; `(avy-lead-face-0 ((t (:foreground ,"#750000" :background  ,"#BD9800"))))
-;; `(avy-lead-face-1 ((t (:foreground ,"#750000" :background  ,"#BD9800"))))
-;; `(avy-lead-face-2 ((t (:foreground ,"#750000" :background  ,"#BD9800"))))
-;;  ;; '(avy-lead-face-0 ((t (:background "#750000" :foreground "#BD9800"))))
-;;  ;; '(avy-lead-face ((t (:background "#750000" :foreground "#BD9800" :weight bold))))
-
-
-;; (defconst avy-lead-faces '(avy-lead-face ((t (:foreground ,"#750000" :background  ,"#BD9800")))
-;;                            avy-lead-face-0 ((t (:foreground ,"#750000" :background  ,"#BD9800")))
-;;                            avy-lead-face-2 ((t (:foreground ,"#750000" :background  ,"#BD9800")))
-;;                            avy-lead-face ((t (:foreground ,"#750000" :background  ,"#BD9800")))
-;;                            avy-lead-face-0 ((t (:foreground ,"#750000" :background  ,"#BD9800")))
-;;                            avy-lead-face-2 ((t (:foreground ,"#750000" :background  ,"#BD9800"))))
-;;   "Face sequence for `avy--overlay-at-full'.")
-
-;; (with-eval-after-load 'evil-commentary
-;;   (define-key evil-motion-state-map (kbd "g c") 'evil-commentary-line))
-
 
 ;; python
 (setq org-babel-python-command "python3")
@@ -414,12 +327,11 @@
 (setq auto-save-default nil)
 (setq create-lockfiles nil)
 
+;; 切换最近buffer
 (defun switch-to-last-buffer ()
   (interactive)
   (switch-to-buffer nil))
-
 (global-set-key (kbd "C-<backspace>") 'switch-to-last-buffer)
-
 (defadvice switch-to-buffer (before save-buffer-now activate)
   (when buffer-file-name (save-buffer)))
 (defadvice other-window (before other-window-now activate)
@@ -437,4 +349,33 @@
                 '(("C"     (astyle "--mode=c"))
                   ("Shell" (shfmt "-i" "4" "-ci")))))
 
+;; 在treemacs中, 使用emacs键绑定
 (evil-set-initial-state 'treemacs-mode 'emacs)
+
+;; v模式颜色
+(set-face-attribute 'region nil :background "#be369c")
+
+;; 括号颜色
+(set-face-attribute 'show-paren-match nil :foreground "#be369c" :background "#00000000")
+(set-face-attribute 'vertico-current nil :foreground "black" :background "#ee9752")
+
+;; 禁用光标闪烁
+(blink-cursor-mode 0)
+
+;; 光标颜色
+(setq evil-default-cursor       '("DodgerBlue1" box)
+      evil-normal-state-cursor  '("DeepPink" box)
+      evil-emacs-state-cursor   '("orange" box)
+      evil-motion-state-cursor  '("SeaGreen1" box)
+      evil-insert-state-cursor  '("white" bar)
+      evil-visual-state-cursor  '("white" box)
+      evil-replace-state-cursor '("pink" box))
+(setopt use-short-answers t)
+;; 搜索颜色
+(set-face-attribute 'lazy-highlight nil :foreground "black" :background "#a88d32")
+(set-face-attribute 'isearch nil :foreground "black" :background "red")
+
+(set-face-attribute 'mode-line nil :foreground "black" :background "RoyalBlue")
+
+;; (set-face-attribute 'avy-goto-char-timer-face nil :foreground "black" :background "blue")
+;; avy
