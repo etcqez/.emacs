@@ -61,9 +61,9 @@
 ;;   :init (doom-modeline-mode 1)
 ;;   :custom ((doom-modeline-height 15)))
 
-;; (with-eval-after-load 'cnfonts
-;;   (set-face-attribute 'default nil :font "Monospace")
-;;   )
+(with-eval-after-load 'cnfonts
+  (set-face-attribute 'default nil :font "Hack")
+  )
 ;; (set-fontset-font t '(#x2ff0 . #x9ffc) (font-spec :family "Noto Sans Mono CJK SC" :size 14 ))
 
 
@@ -89,16 +89,16 @@
 (use-package yasnippet
   :ensure t
   :config (yas-global-mode))
-(use-package which-key
-  :ensure t
-  :config (which-key-mode))
-(use-package helm-lsp
-  :ensure t)
-(use-package helm
-  :ensure t
-  :config (helm-mode))
-(use-package lsp-treemacs
-  :ensure t)
+;; (use-package which-key
+;;   :ensure t
+;;   :config (which-key-mode))
+;; (use-package helm-lsp
+;;   :ensure t)
+;; (use-package helm
+;;   :ensure t
+;;   :config (helm-mode))
+;; (use-package lsp-treemacs
+;;   :ensure t)
 
 ;;; This will enable emacs to compile a simple cpp single file without any makefile by just pressing [f9] key
 (defun code-compile()
@@ -131,6 +131,7 @@
   :config
   (setq pyim-page-tooltip 'popup)
   )
+
 (use-package cnfonts
   :config
   (cnfonts-mode 1)
@@ -148,11 +149,11 @@
   ;; (setq evil-search-module 'evil-search)
   (setq evil-want-keybinding nil)
   ;; no vim insert bindings
-					;  (setq evil-undo-system 'undo-fu)
+  ;; (setq evil-undo-system 'undo-fu)
   (setq evil-undo-system 'undo-fu)
   :config
   (evil-mode 1)
-  ;; (evil-set-undo-system 'undo-fu)
+  (evil-set-undo-system 'undo-fu)
   )
 ;;
 (use-package evil-commentary
@@ -280,18 +281,25 @@
         ;; Match a buffer whose name is "*Occur*".  We have to escape
         ;; the asterisks to match them literally and not as a special
         ;; regular expression character.
-        ("\\**shell\\*"
-         ;; If a buffer with the matching major-mode exists in some
-         ;; window, then use that one.  Otherwise, display the buffer
-         ;; below the current window.
-         ;; (display-buffer-reuse-mode-window display-buffer-below-selected)
-         ;; Then we have the parameters...
+        ("\\*shell\\*"
 	 (display-buffer-in-side-window)
 	 (side . right)
          ;; (dedicated . t)
          ;; (window-height . fit-window-to-buffer)
-	 )))
-
+	 )
+        ("\\*eshell\\*"
+	 (display-buffer-in-side-window)
+	 (side . right)
+	 )
+        ("\\*terminal\\*"
+	 (display-buffer-in-side-window)
+	 (side . right)
+	 )
+        ("\\*ansi\-term\\*"
+	 (display-buffer-in-side-window)
+	 (side . right)
+	 )
+	))
 (define-abbrev global-abbrev-table "metest" "a global abbrev for demo purposes")
 (define-abbrev text-mode-abbrev-table "metest" "text-mode abbrev expansion here")
 ;; `abbrev-mode' is buffer-local
@@ -312,6 +320,9 @@
 ;; vim-numbers
 (define-key evil-normal-state-map (kbd "C-a") 'evil-numbers/inc-at-pt)
 (define-key evil-normal-state-map (kbd "C-e") 'evil-numbers/dec-at-pt)
+(define-key evil-normal-state-map (kbd "=") 'lsp-format-buffer)
+(define-key evil-normal-state-map (kbd "+") 'format-all-buffer)
+(define-key evil-normal-state-map (kbd "C-t") 'treemacs)
 
 ;; emacs
 (define-key evil-insert-state-map (kbd "C-e") #'end-of-line)
@@ -401,10 +412,29 @@
 ;;   `((".*" "~/.emacs-saves/" t)))
 (electric-pair-mode t)
 (setq auto-save-default nil)
-(setq create-lockfiles nil) 
+(setq create-lockfiles nil)
 
 (defun switch-to-last-buffer ()
   (interactive)
   (switch-to-buffer nil))
 
 (global-set-key (kbd "C-<backspace>") 'switch-to-last-buffer)
+
+(defadvice switch-to-buffer (before save-buffer-now activate)
+  (when buffer-file-name (save-buffer)))
+(defadvice other-window (before other-window-now activate)
+  (when buffer-file-name (save-buffer)))
+(defadvice other-frame (before other-frame-now activate)
+  (when buffer-file-name (save-buffer)))
+
+(setq undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo")))
+
+(use-package format-all
+  :commands format-all-mode
+  :hook (prog-mode . format-all-mode)
+  :config
+  (setq-default format-all-formatters
+                '(("C"     (astyle "--mode=c"))
+                  ("Shell" (shfmt "-i" "4" "-ci")))))
+
+(evil-set-initial-state 'treemacs-mode 'emacs)
